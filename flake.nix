@@ -24,17 +24,17 @@
           ./hosts/desktop/hardware-configuration.nix
           ./modules/common.nix           # Shared settings
           ./modules/gaming-full.nix      # Full gaming setup
-          
+
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.inquery = import ./hosts/desktop/home.nix;
+            home-manager.users.inquery = import ./hosts/desktop/desktop-home.nix;
           }
         ];
       };
-      
+
       # Laptop - Streaming and light gaming
       laptop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -45,13 +45,13 @@
           ./modules/common.nix              # Shared settings
           ./modules/gaming-streaming.nix    # Streaming only
           ./modules/laptop-power.nix        # Battery optimization
-          
+
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.inquery = import ./hosts/laptop/home.nix;
+            home-manager.users.inquery = import ./hosts/laptop/laptop-home.nix;
           }
         ];
       };
