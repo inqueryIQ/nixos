@@ -10,6 +10,9 @@
       ./hardware-configuration.nix
     ];
 
+  # Enable flakes
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -52,7 +55,7 @@
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
 
-  # Configure keymap in X11
+   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
     variant = "";
@@ -86,24 +89,82 @@
     description = "Ian Querry";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-    #  thunderbird
+
     ];
   };
 
-  # Install firefox.
+  # Enable Programs
   programs.firefox.enable = true;
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true;  # Optional: for Steam Remote Play
+    dedicatedServer.openFirewall = true;  # Optional: for game servers
+
+    # Additional Proton compatibility
+    extraCompatPackages = with pkgs; [
+      proton-ge-bin  # Community-enhanced Proton
+    ];
+  };
+  programs.niri.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  # GameMode configuration
+  programs.gamemode = {
+    enable = true;
+    settings = {
+      general = {
+        renice = 10;  # Priority boost for games
+      };
+      gpu = {
+        apply_gpu_optimisations = "accept-responsibility";
+        gpu_device = 0;
+        amd_performance_level = "high";  # For AMD GPUs
+      };
+      cpu = {
+        park_cores = "no";
+        pin_policy = "prefer-physical";
+      };
+    };
+  };
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  	vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  	wget
+  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+  wget
+  bitwarden-desktop
+  discord
+  fuzzel
+  heroic
+  gamescope
 	gnome-tweaks
-	vscode
 	ghostty
+	mangohud
+	obsidian
+  wineWowPackages.staging
+  winetricks
+  protontricks
+  protonup-qt  # GUI for managing Proton versions
+	steam
+	unzip
+  p7zip
+  vscode
+  vulkan-tools
+  vulkan-loader
+  vulkan-validation-layers
+  vkbasalt  # Post-processing layer (sharpening, etc)
+  wlogout
+  xwayland-satellite
+  zed-editor
+  wl-clipboard    # Clipboard management
+  cliphist        # Clipboard history
+  matugen         # Color scheme generation
+  brightnessctl   # Brightness control
+  playerctl       # Media control
+  swaylock        # Screen locker (DMS uses this)
+  swayidle        # Idle management
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

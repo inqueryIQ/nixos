@@ -1,22 +1,34 @@
-{ config, pkgs, ... }:
-
+{ config, pkgs, inputs, ... }:
 {
-  home.username = "inquery";
-  home.homeDirectory = "/home/inquery";
-  home.stateVersion = "25.11"; # Match your NixOS version
-
-  # Packages for your user
-  home.packages = with pkgs; [
-    # Add user packages here
+  imports = [
+    inputs.dms.homeModules.dankMaterialShell.default
   ];
 
-  # Git configuration example
+  programs.bash = {
+    enable = true;
+    shellAliases = {
+      nrs = "sudo nixos-rebuild switch --flake /home/inquery/nixos-config#";
+    };
+  };
+
+  home.username = "inquery";
+  home.homeDirectory = "/home/inquery";
+  home.stateVersion = "25.11";
+
+  # Enable DankMaterialShell
+  programs.dankMaterialShell = {
+    enable = true;
+    # Optional: customize settings
+    # settings = {
+    #   # Your custom settings here
+    # };
+  };
+
   programs.git = {
     enable = true;
     userName = "Your Name";
     userEmail = "your.email@example.com";
   };
 
-  # Let home-manager manage itself
   programs.home-manager.enable = true;
 }
