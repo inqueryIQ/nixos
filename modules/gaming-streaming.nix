@@ -1,30 +1,49 @@
-# Light gaming and streaming setup for laptop
+# Gaming configuration for streaming (lighter for laptop)
 { config, pkgs, ... }:
 
 {
-  # Steam with remote play only
+  # Enable Steam
   programs.steam = {
     enable = true;
-    remotePlay.openFirewall = true;  # Just streaming
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
+    
+    # Additional Proton compatibility
+    extraCompatPackages = with pkgs; [
+      proton-ge-bin
+    ];
   };
 
-  # Basic graphics support
-  hardware.graphics = {
+  # GameMode configuration (lighter for laptop)
+  programs.gamemode = {
     enable = true;
-    enable32Bit = true;
+    settings = {
+      general = {
+        renice = 10;
+      };
+      gpu = {
+        apply_gpu_optimisations = "accept-responsibility";
+        gpu_device = 0;
+      };
+    };
   };
 
-  # Streaming and light gaming packages
+  # Streaming and gaming packages (lighter selection for laptop)
   environment.systemPackages = with pkgs; [
-    # Streaming clients
-    moonlight-qt  # NVIDIA GameStream / Sunshine client
-    
-    # Light gaming tools
+    # Gaming
     steam
-    mangohud  # For monitoring when playing locally
+    heroic
+    mangohud
+    gamescope
     
-    # Basic Vulkan support
+    # Wine
+    wineWowPackages.staging
+    winetricks
+    protontricks
+    
+    # Vulkan support
     vulkan-tools
     vulkan-loader
+    vulkan-validation-layers
   ];
 }

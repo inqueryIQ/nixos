@@ -1,22 +1,24 @@
-# Common settings shared across all hosts
+# Common configuration shared between all hosts
 { config, pkgs, ... }:
 
 {
   # Enable flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  # Use latest kernel
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-
   # Bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # Networking
+  # Use latest kernel
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  # Enable networking
   networking.networkmanager.enable = true;
 
-  # Timezone and locale
+  # Set your time zone
   time.timeZone = "America/Indiana/Indianapolis";
+
+  # Locale settings
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "en_US.UTF-8";
@@ -30,18 +32,22 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # X11 and display manager
-  services.xserver.enable = true;
-  services.displayManager.gdm.enable = true;
-  services.desktopManager.gnome.enable = true;
-
-  # Keymap
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
+  # Enable X11 for XWayland support
+  services.xserver = {
+    enable = true;
+    xkb = {
+      layout = "us";
+      variant = "";
+    };
   };
 
-  # Audio with PipeWire
+  # IMPORTANT: GNOME is DISABLED system-wide
+  # MangoWC + DMS will be used instead
+
+  # Enable CUPS to print documents
+  services.printing.enable = true;
+
+  # Enable sound with pipewire
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -51,10 +57,7 @@
     pulse.enable = true;
   };
 
-  # Printing
-  services.printing.enable = true;
-
-  # User account
+  # Define user account
   users.users.inquery = {
     isNormalUser = true;
     description = "Ian Querry";
@@ -64,33 +67,42 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # Essential programs
-  programs.firefox.enable = true;
-  programs.niri.enable = true;
-
   # Common system packages
   environment.systemPackages = with pkgs; [
+    # Editors
     vim
-    wget
-    bitwarden-desktop
-    discord
-    fuzzel
-    ghostty
-    obsidian
     vscode
     zed-editor
+
+    # Terminal
+    alacritty
+    ghostty
+    foot
+
+    # Wayland utilities
     wl-clipboard
     cliphist
+    xwayland-satellite
+
+    # System utilities
+    wget
+    unzip
+    p7zip
+
+    # Applications
+    firefox
+    bitwarden-desktop
+    discord
+    obsidian
+
+    # DMS dependencies (these are needed for DMS to work properly)
     matugen
     brightnessctl
     playerctl
-    swaylock
-    swayidle
-    gnome-tweaks
+    fuzzel
     wlogout
-    xwayland-satellite
   ];
 
-  # NixOS version
+  # System state version
   system.stateVersion = "25.11";
 }

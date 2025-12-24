@@ -1,8 +1,8 @@
-# Full gaming setup for desktop
+# Full gaming configuration for desktop
 { config, pkgs, ... }:
 
 {
-  # Steam with full features
+  # Enable Steam with all features
   programs.steam = {
     enable = true;
     remotePlay.openFirewall = true;
@@ -10,16 +10,16 @@
     
     # Additional Proton compatibility
     extraCompatPackages = with pkgs; [
-      proton-ge-bin  # Community-enhanced Proton
+      proton-ge-bin
     ];
   };
 
-  # GameMode for performance optimization
+  # GameMode configuration (full performance)
   programs.gamemode = {
     enable = true;
     settings = {
       general = {
-        renice = 10;  # Priority boost for games
+        renice = 10;
       };
       gpu = {
         apply_gpu_optimisations = "accept-responsibility";
@@ -33,35 +33,24 @@
     };
   };
 
-  # Graphics support
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;  # Required for 32-bit games
-  };
-
-  # Performance-oriented CPU governor
-  powerManagement.cpuFreqGovernor = "performance";
-
-  # Gaming-specific packages
+  # Full gaming packages for desktop
   environment.systemPackages = with pkgs; [
-    # Game launchers
-    heroic
+    # Gaming
     steam
-    
-    # Gaming tools
-    gamescope
+    heroic
     mangohud
+    gamescope
+    protonup-qt
     
-    # Wine and compatibility
+    # Wine
     wineWowPackages.staging
     winetricks
     protontricks
-    protonup-qt
     
-    # Vulkan
+    # Vulkan support
     vulkan-tools
     vulkan-loader
     vulkan-validation-layers
-    vkBasalt
+    vkbasalt  # Post-processing layer
   ];
 }

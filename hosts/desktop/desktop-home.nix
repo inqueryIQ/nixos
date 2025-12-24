@@ -2,7 +2,7 @@
 {
   imports = [
     inputs.dms.homeModules.dank-material-shell
-  ];
+    ];
 
   home.username = "inquery";
   home.homeDirectory = "/home/inquery";
@@ -17,8 +17,8 @@
   programs.bash = {
     enable = true;
     shellAliases = {
-      nrs = "sudo nixos-rebuild switch --flake /home/inquery/nixos-config#desktop";
-      nrs-test = "sudo nixos-rebuild test --flake /home/inquery/nixos-config#desktop";
+      nrs = "sudo nixos-rebuild switch --flake /home/inquery/nixos-config#$(hostname)";
+      nrs-test = "sudo nixos-rebuild test --flake /home/inquery/nixos-config#$(hostname)";
     };
   };
 
@@ -29,33 +29,31 @@
     userEmail = "your.email@example.com";  # Update with your actual email
   };
 
-  # MangoHud configuration for desktop
+  # Full MangoHud configuration for desktop gaming
   programs.mangohud = {
     enable = true;
     settings = {
-      fps_limit = 0;
-      vsync = 0;
-      
-      # Display settings
-      position = "top-left";
-      font_size = 24;
-      
-      # What to show
+      # Full overlay for gaming
       fps = true;
       frametime = true;
-      cpu_temp = true;
-      gpu_temp = true;
       cpu_stats = true;
+      cpu_temp = true;
       gpu_stats = true;
+      gpu_temp = true;
       ram = true;
       vram = true;
+      position = "top-left";
+      font_size = 24;
+
+      # FPS limit options
+      fps_limit = "0,144";  # Unlimited and 144 FPS cap toggle
+      toggle_fps_limit = "Shift_R+F1";
     };
   };
 
   # Desktop-specific packages
   home.packages = with pkgs; [
     # Add any user-specific desktop packages here
-    obs-studio  # Streaming/recording
   ];
 
   programs.home-manager.enable = true;

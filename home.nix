@@ -26,9 +26,17 @@
 
   programs.git = {
     enable = true;
-    userName = "Ian Querry";
-    userEmail = "your.email@example.com";
+    userName = "Ian";
+    userEmail = "inquery@protonmail.com";
+    extraConfig = {
+      init.defaultBranch = "main";
+      pull.rebase = false;
   };
+};
+
+programs.ssh = {
+  enable = true;
+};
 
   programs.home-manager.enable = true;
 }

@@ -1,56 +1,43 @@
-# Power management and battery optimization for laptop
+# Laptop power management and battery optimization
 { config, pkgs, ... }:
 
 {
-  # Disable GNOME's power-profiles-daemon (conflicts with TLP and auto-cpufreq)
-  services.power-profiles-daemon.enable = false;
-
-  # Auto CPU frequency management
-  services.auto-cpufreq = {
-    enable = true;
-    settings = {
-      charger = {
-        governor = "performance";
-        turbo = "auto";
-      };
-      battery = {
-        governor = "powersave";
-        turbo = "auto";
-        scaling_min_freq = 1400000;  # Adjust based on your CPU
-        scaling_max_freq = 3500000;  # Adjust based on your CPU
-      };
-    };
-  };
-
-  # Thermal management
-  services.thermald.enable = true;
-
-  # TLP for advanced power management
+  # Enable TLP for better battery life
   services.tlp = {
     enable = true;
     settings = {
       # CPU settings
       CPU_SCALING_GOVERNOR_ON_AC = "performance";
       CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+      
+      # CPU frequency scaling
       CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
-      CPU_ENERGY_PERF_POLICY_ON_BAT = "balance_power";
+      CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+      
+      # CPU boost
       CPU_BOOST_ON_AC = 1;
       CPU_BOOST_ON_BAT = 0;
       
-      # Platform profile
+      # Platform profiles
       PLATFORM_PROFILE_ON_AC = "performance";
       PLATFORM_PROFILE_ON_BAT = "low-power";
       
       # USB autosuspend
       USB_AUTOSUSPEND = 1;
       
-      # Runtime power management
-      RUNTIME_PM_ON_AC = "on";
-      RUNTIME_PM_ON_BAT = "auto";
+      # Battery charge thresholds (if supported)
+      START_CHARGE_THRESH_BAT0 = 75;
+      STOP_CHARGE_THRESH_BAT0 = 80;
     };
   };
 
-  # Power management packages
+  # Enable powertop for power monitoring
+  powerManagement.powertop.enable = true;
+
+  # Enable thermald for thermal management
+  services.thermald.enable = true;
+
+  # Additional power-saving packages
   environment.systemPackages = with pkgs; [
     powertop
     acpi
